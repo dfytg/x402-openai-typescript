@@ -1,5 +1,5 @@
 {
-  "name": "@qntx/x402-openai",
+  "name": "x402-openai",
   "version": "0.2.0",
   "description": "Drop-in OpenAI TypeScript client with transparent x402 payment support.",
   "type": "module",

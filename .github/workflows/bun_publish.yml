@@ -1,0 +1,12 @@
+name: Publish to NPM
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  call-publish:
+    uses: qntx/workflows/.github/workflows/bun-publish.yml@main
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

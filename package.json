@@ -1,6 +1,6 @@
 {
   "name": "x402-openai",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Drop-in OpenAI TypeScript client with transparent x402 payment support.",
   "type": "module",
   "main": "./src/index.ts",

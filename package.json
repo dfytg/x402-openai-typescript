@@ -41,11 +41,11 @@
     "url": "https://github.com/qntx/x402-openai-typescript"
   },
   "dependencies": {
-    "@x402/fetch": "^2.3.0",
-    "openai": "^6.21.0"
+    "@x402/fetch": "^2.5.0",
+    "openai": "^6.25.0"
   },
   "peerDependencies": {
-    "typescript": "^5",
+    "typescript": "^5.9.3",
     "@x402/evm": "^2.3.0",
     "@x402/svm": "^2.3.0",
     "viem": "^2.0.0",
@@ -71,10 +71,10 @@
   },
   "devDependencies": {
     "@scure/base": "^2.0.0",
-    "@solana/kit": "^6.0.1",
+    "@solana/kit": "^6.1.0",
     "@types/bun": "latest",
-    "@x402/evm": "^2.3.0",
-    "@x402/svm": "^2.3.0",
-    "viem": "^2.45.2"
+    "@x402/evm": "^2.5.0",
+    "@x402/svm": "^2.5.0",
+    "viem": "^2.46.3"
   }
 }

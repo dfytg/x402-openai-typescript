@@ -24,7 +24,11 @@
  * ```
  */
 
-import { wrapFetchWithPayment, type x402Client } from "@x402/fetch";
+import {
+	type PaymentPolicy,
+	wrapFetchWithPayment,
+	type x402Client,
+} from "@x402/fetch";
 import type { ClientOptions } from "openai";
 import OpenAI from "openai";
 import { createX402Client } from "./wallet.ts";
@@ -39,6 +43,22 @@ export interface X402OpenAIOptions extends Omit<ClientOptions, "fetch"> {
 	wallet?: Wallet;
 	/** List of {@link Wallet} adapters for multi-chain support. */
 	wallets?: Wallet[];
+	/**
+	 * Payment policies to filter or prioritise payment requirements.
+	 * Ignored when `x402Client` is provided.
+	 *
+	 * @example
+	 * ```ts
+	 * import { preferNetwork, preferScheme, maxAmount } from "x402-openai";
+	 *
+	 * policies: [
+	 *   preferNetwork("eip155:8453"),
+	 *   preferScheme("exact"),
+	 *   maxAmount(1_000_000n),
+	 * ]
+	 * ```
+	 */
+	policies?: PaymentPolicy[];
 	/** Pre-configured `x402Client` instance. */
 	x402Client?: x402Client;
 }
@@ -60,8 +80,11 @@ export interface X402OpenAIOptions extends Omit<ClientOptions, "fetch"> {
  *
  * @example
  * ```ts
+ * import { preferNetwork } from "x402-openai";
+ *
  * const client = new X402OpenAI({
  *   wallet: new EvmWallet({ privateKey: "0x…" }),
+ *   policies: [preferNetwork("eip155:8453")],
  * });
  *
  * const completion = await client.chat.completions.create({
@@ -75,6 +98,7 @@ export class X402OpenAI extends OpenAI {
 		const {
 			wallet,
 			wallets,
+			policies,
 			x402Client: prebuiltClient,
 			...openaiOptions
 		} = options;
@@ -85,6 +109,7 @@ export class X402OpenAI extends OpenAI {
 		const x402Fetch = createLazyX402Fetch({
 			wallet,
 			wallets,
+			policies,
 			x402Client: prebuiltClient,
 		});
 
@@ -111,6 +136,7 @@ type FetchFn = (
 function createLazyX402Fetch(options: {
 	wallet?: Wallet;
 	wallets?: Wallet[];
+	policies?: PaymentPolicy[];
 	x402Client?: x402Client;
 }): FetchFn {
 	let clientPromise: Promise<x402Client> | null = null;

@@ -21,10 +21,10 @@ import type { x402Client } from "@x402/fetch";
  * - Register the appropriate x402 payment scheme on an {@link x402Client} instance.
  */
 export interface Wallet {
-	/**
-	 * Register this wallet's payment scheme(s) with the given client.
-	 *
-	 * @param client - An `x402Client` instance from `@x402/fetch`.
-	 */
-	register(client: x402Client): Promise<void> | void;
+  /**
+   * Register this wallet's payment scheme(s) with the given client.
+   *
+   * @param client - An `x402Client` instance from `@x402/fetch`.
+   */
+  register(client: x402Client): Promise<void> | void;
 }

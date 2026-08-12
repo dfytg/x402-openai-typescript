@@ -12,8 +12,8 @@
 import type { x402Client } from "@x402/fetch";
 
 export interface SvmWalletOptions {
-	/** Base58-encoded Solana keypair secret key. */
-	privateKey: string;
+  /** Base58-encoded Solana keypair secret key. */
+  privateKey: string;
 }
 
 /**
@@ -25,24 +25,22 @@ export interface SvmWalletOptions {
  * ```
  */
 export class SvmWallet {
-	private readonly _privateKey: string;
+  private readonly _privateKey: string;
 
-	constructor(options: SvmWalletOptions) {
-		if (!options.privateKey) {
-			throw new Error("SvmWallet requires a non-empty 'privateKey'.");
-		}
-		this._privateKey = options.privateKey;
-	}
+  constructor(options: SvmWalletOptions) {
+    if (!options.privateKey) {
+      throw new Error("SvmWallet requires a non-empty 'privateKey'.");
+    }
+    this._privateKey = options.privateKey;
+  }
 
-	/** Register the SVM exact payment scheme on the given client. */
-	async register(client: x402Client): Promise<void> {
-		const { ExactSvmScheme } = await import("@x402/svm");
-		const { createKeyPairSignerFromBytes } = await import("@solana/kit");
-		const { base58 } = await import("@scure/base");
+  /** Register the SVM exact payment scheme on the given client. */
+  async register(client: x402Client): Promise<void> {
+    const { ExactSvmScheme } = await import("@x402/svm");
+    const { createKeyPairSignerFromBytes } = await import("@solana/kit");
+    const { base58 } = await import("@scure/base");
 
-		const signer = await createKeyPairSignerFromBytes(
-			base58.decode(this._privateKey),
-		);
-		client.register("solana:*", new ExactSvmScheme(signer));
-	}
+    const signer = await createKeyPairSignerFromBytes(base58.decode(this._privateKey));
+    client.register("solana:*", new ExactSvmScheme(signer));
+  }
 }

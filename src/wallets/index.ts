@@ -10,9 +10,9 @@
 
 export type { Wallet } from "./base.ts";
 export type {
-	EvmWalletMnemonicOptions,
-	EvmWalletOptions,
-	EvmWalletPrivateKeyOptions,
+  EvmWalletMnemonicOptions,
+  EvmWalletOptions,
+  EvmWalletPrivateKeyOptions,
 } from "./evm.ts";
 export { EvmWallet } from "./evm.ts";
 export type { SvmWalletOptions } from "./svm.ts";

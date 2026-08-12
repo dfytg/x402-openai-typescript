@@ -2,55 +2,65 @@
   "name": "x402-openai",
   "version": "0.3.0",
   "description": "Drop-in OpenAI TypeScript client with transparent x402 payment support.",
-  "type": "module",
-  "main": "./src/index.ts",
-  "module": "./src/index.ts",
-  "types": "./src/index.ts",
-  "files": [
-    "src",
-    "README.md",
-    "LICENSE"
-  ],
-  "exports": {
-    ".": "./src/index.ts",
-    "./wallets": "./src/wallets/index.ts"
-  },
-  "scripts": {
-    "lint": "bunx @biomejs/biome check src/ tests/ examples/",
-    "format": "bunx @biomejs/biome check --write src/ tests/ examples/",
-    "typecheck": "tsc --noEmit",
-    "test": "bun test",
-    "check": "bun run lint && bun run typecheck"
-  },
   "keywords": [
-    "openai",
-    "x402",
-    "payment",
-    "crypto",
-    "usdc",
-    "llm",
     "ai",
-    "wallet",
+    "crypto",
     "evm",
-    "solana"
+    "llm",
+    "openai",
+    "payment",
+    "solana",
+    "usdc",
+    "wallet",
+    "x402"
   ],
-  "author": "QNTX <x@qntx.fun>",
   "license": "MIT",
+  "author": "QNTX <x@qntx.fun>",
   "repository": {
     "type": "git",
     "url": "https://github.com/qntx/x402-openai-typescript"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./wallets": "./dist/wallets/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "dev": "vp pack --watch",
+    "test": "vp test",
+    "check": "vp check",
+    "prepublishOnly": "vp run build"
   },
   "dependencies": {
     "@x402/fetch": "^2.5.0",
     "openai": "^6.25.0"
   },
+  "devDependencies": {
+    "@scure/base": "^2.0.0",
+    "@solana/kit": "^6.1.0",
+    "@types/node": "^26.1.1",
+    "@x402/evm": "^2.5.0",
+    "@x402/svm": "^2.5.0",
+    "bumpp": "^11.1.0",
+    "typescript": "^7.0.2",
+    "viem": "^2.46.3",
+    "vite-plus": "^0.2.4"
+  },
   "peerDependencies": {
-    "typescript": "^5.9.3",
+    "@scure/base": "^1.0.0",
+    "@solana/kit": "^2.0.0",
     "@x402/evm": "^2.3.0",
     "@x402/svm": "^2.3.0",
-    "viem": "^2.0.0",
-    "@solana/kit": "^2.0.0",
-    "@scure/base": "^1.0.0"
+    "typescript": "^5.9.3",
+    "viem": "^2.0.0"
   },
   "peerDependenciesMeta": {
     "@x402/evm": {
@@ -69,12 +79,11 @@
       "optional": true
     }
   },
-  "devDependencies": {
-    "@scure/base": "^2.0.0",
-    "@solana/kit": "^6.1.0",
-    "@types/bun": "latest",
-    "@x402/evm": "^2.5.0",
-    "@x402/svm": "^2.5.0",
-    "viem": "^2.46.3"
+  "devEngines": {
+    "packageManager": {
+      "name": "bun",
+      "version": "1.3.14",
+      "onFail": "download"
+    }
   }
 }

@@ -6,7 +6,7 @@
 
 [![npm](https://img.shields.io/npm/v/x402-openai)](https://www.npmjs.com/package/x402-openai)
 [![TypeScript 5.0+](https://img.shields.io/badge/typescript-5.0+-blue)](https://typescriptlang.org)
-[![CI](https://github.com/qntx/x402-openai-typescript/actions/workflows/bun.yml/badge.svg)](https://github.com/qntx/x402-openai-typescript/actions)
+[![CI](https://github.com/qntx/x402-openai-typescript/actions/workflows/ci.yml/badge.svg)](https://github.com/qntx/x402-openai-typescript/actions)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 </div>

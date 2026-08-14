@@ -24,26 +24,26 @@ import type { Wallet } from "./wallets/base.ts";
  * - `x402Client` — a pre-configured x402 client (returned as-is).
  */
 export async function createX402Client(options: {
-	wallet?: Wallet;
-	wallets?: Wallet[];
-	x402Client?: x402Client;
-	policies?: PaymentPolicy[];
+  wallet?: Wallet;
+  wallets?: Wallet[];
+  x402Client?: x402Client;
+  policies?: PaymentPolicy[];
 }): Promise<x402Client> {
-	const { policies, ...credentialOptions } = options;
-	const resolved = resolveWallets(credentialOptions);
+  const { policies, ...credentialOptions } = options;
+  const resolved = resolveWallets(credentialOptions);
 
-	// Pre-built client — return as-is.
-	if (!Array.isArray(resolved)) {
-		if (policies && policies.length > 0) {
-			console.warn(
-				"x402: 'policies' ignored when 'x402Client' is provided — " +
-					"register policies on the pre-built client directly.",
-			);
-		}
-		return resolved;
-	}
+  // Pre-built client — return as-is.
+  if (!Array.isArray(resolved)) {
+    if (policies && policies.length > 0) {
+      console.warn(
+        "x402: 'policies' ignored when 'x402Client' is provided — " +
+          "register policies on the pre-built client directly.",
+      );
+    }
+    return resolved;
+  }
 
-	return buildClient(resolved, policies);
+  return buildClient(resolved, policies);
 }
 
 /**
@@ -52,49 +52,42 @@ export async function createX402Client(options: {
  * @throws {Error} On ambiguous or missing credentials.
  */
 export function resolveWallets(options: {
-	wallet?: Wallet;
-	wallets?: Wallet[];
-	x402Client?: x402Client;
+  wallet?: Wallet;
+  wallets?: Wallet[];
+  x402Client?: x402Client;
 }): Wallet[] | x402Client {
-	const hasWallet = options.wallet != null;
-	const hasWallets = options.wallets != null && options.wallets.length > 0;
-	const hasPrebuilt = options.x402Client != null;
+  const hasWallet = options.wallet != null;
+  const hasWallets = options.wallets != null && options.wallets.length > 0;
+  const hasPrebuilt = options.x402Client != null;
 
-	const sources = [hasWallet, hasWallets, hasPrebuilt].filter(Boolean).length;
+  const sources = [hasWallet, hasWallets, hasPrebuilt].filter(Boolean).length;
 
-	if (sources === 0) {
-		throw new Error(
-			"Provide exactly one credential source: 'wallet', 'wallets', or 'x402Client'.",
-		);
-	}
-	if (sources > 1) {
-		throw new Error(
-			"Provide only one credential source — 'wallet', 'wallets', or 'x402Client'.",
-		);
-	}
+  if (sources === 0) {
+    throw new Error("Provide exactly one credential source: 'wallet', 'wallets', or 'x402Client'.");
+  }
+  if (sources > 1) {
+    throw new Error("Provide only one credential source — 'wallet', 'wallets', or 'x402Client'.");
+  }
 
-	if (hasPrebuilt && options.x402Client) {
-		return options.x402Client;
-	}
+  if (hasPrebuilt && options.x402Client) {
+    return options.x402Client;
+  }
 
-	if (hasWallet && options.wallet) {
-		return [options.wallet];
-	}
+  if (hasWallet && options.wallet) {
+    return [options.wallet];
+  }
 
-	return [...(options.wallets ?? [])];
+  return [...(options.wallets ?? [])];
 }
 
 /** Create an x402 client, register all wallets and policies. */
-async function buildClient(
-	walletList: Wallet[],
-	policies?: PaymentPolicy[],
-): Promise<x402Client> {
-	const client = new x402Client();
-	for (const w of walletList) {
-		await w.register(client);
-	}
-	for (const p of policies ?? []) {
-		client.registerPolicy(p);
-	}
-	return client;
+async function buildClient(walletList: Wallet[], policies?: PaymentPolicy[]): Promise<x402Client> {
+  const client = new x402Client();
+  for (const w of walletList) {
+    await w.register(client);
+  }
+  for (const p of policies ?? []) {
+    client.registerPolicy(p);
+  }
+  return client;
 }

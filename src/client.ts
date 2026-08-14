@@ -24,11 +24,7 @@
  * ```
  */
 
-import {
-	type PaymentPolicy,
-	wrapFetchWithPayment,
-	type x402Client,
-} from "@x402/fetch";
+import { type PaymentPolicy, wrapFetchWithPayment, type x402Client } from "@x402/fetch";
 import type { ClientOptions } from "openai";
 import OpenAI from "openai";
 import { createX402Client } from "./wallet.ts";
@@ -39,28 +35,28 @@ const DEFAULT_BASE_URL = "https://llm.qntx.fun/v1";
 
 /** x402-specific options on top of the standard OpenAI client options. */
 export interface X402OpenAIOptions extends Omit<ClientOptions, "fetch"> {
-	/** A single {@link Wallet} adapter (e.g. `EvmWallet`, `SvmWallet`). */
-	wallet?: Wallet;
-	/** List of {@link Wallet} adapters for multi-chain support. */
-	wallets?: Wallet[];
-	/**
-	 * Payment policies to filter or prioritise payment requirements.
-	 * Ignored when `x402Client` is provided.
-	 *
-	 * @example
-	 * ```ts
-	 * import { preferNetwork, preferScheme, maxAmount } from "x402-openai";
-	 *
-	 * policies: [
-	 *   preferNetwork("eip155:8453"),
-	 *   preferScheme("exact"),
-	 *   maxAmount(1_000_000n),
-	 * ]
-	 * ```
-	 */
-	policies?: PaymentPolicy[];
-	/** Pre-configured `x402Client` instance. */
-	x402Client?: x402Client;
+  /** A single {@link Wallet} adapter (e.g. `EvmWallet`, `SvmWallet`). */
+  wallet?: Wallet;
+  /** List of {@link Wallet} adapters for multi-chain support. */
+  wallets?: Wallet[];
+  /**
+   * Payment policies to filter or prioritise payment requirements.
+   * Ignored when `x402Client` is provided.
+   *
+   * @example
+   * ```ts
+   * import { preferNetwork, preferScheme, maxAmount } from "x402-openai";
+   *
+   * policies: [
+   *   preferNetwork("eip155:8453"),
+   *   preferScheme("exact"),
+   *   maxAmount(1_000_000n),
+   * ]
+   * ```
+   */
+  policies?: PaymentPolicy[];
+  /** Pre-configured `x402Client` instance. */
+  x402Client?: x402Client;
 }
 
 /**
@@ -94,32 +90,26 @@ export interface X402OpenAIOptions extends Omit<ClientOptions, "fetch"> {
  * ```
  */
 export class X402OpenAI extends OpenAI {
-	constructor(options: X402OpenAIOptions) {
-		const {
-			wallet,
-			wallets,
-			policies,
-			x402Client: prebuiltClient,
-			...openaiOptions
-		} = options;
+  constructor(options: X402OpenAIOptions) {
+    const { wallet, wallets, policies, x402Client: prebuiltClient, ...openaiOptions } = options;
 
-		// Build a lazy-initialized x402-wrapped fetch function.
-		// Initialization is deferred to the first request so the constructor
-		// remains synchronous (SVM wallet registration is async).
-		const x402Fetch = createLazyX402Fetch({
-			wallet,
-			wallets,
-			policies,
-			x402Client: prebuiltClient,
-		});
+    // Build a lazy-initialized x402-wrapped fetch function.
+    // Initialization is deferred to the first request so the constructor
+    // remains synchronous (SVM wallet registration is async).
+    const x402Fetch = createLazyX402Fetch({
+      wallet,
+      wallets,
+      policies,
+      x402Client: prebuiltClient,
+    });
 
-		super({
-			apiKey: "x402",
-			baseURL: DEFAULT_BASE_URL,
-			...openaiOptions,
-			fetch: x402Fetch,
-		});
-	}
+    super({
+      apiKey: "x402",
+      baseURL: DEFAULT_BASE_URL,
+      ...openaiOptions,
+      fetch: x402Fetch,
+    });
+  }
 }
 
 /**
@@ -128,31 +118,25 @@ export class X402OpenAI extends OpenAI {
  * This allows the constructor to remain synchronous while supporting async
  * wallet registration (e.g. SVM wallets that use Web Crypto API).
  */
-type FetchFn = (
-	input: string | URL | Request,
-	init?: RequestInit,
-) => Promise<Response>;
+type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
 
 function createLazyX402Fetch(options: {
-	wallet?: Wallet;
-	wallets?: Wallet[];
-	policies?: PaymentPolicy[];
-	x402Client?: x402Client;
+  wallet?: Wallet;
+  wallets?: Wallet[];
+  policies?: PaymentPolicy[];
+  x402Client?: x402Client;
 }): FetchFn {
-	let clientPromise: Promise<x402Client> | null = null;
-	let wrappedFetch: FetchFn | null = null;
+  let clientPromise: Promise<x402Client> | null = null;
+  let wrappedFetch: FetchFn | null = null;
 
-	return async (
-		input: string | URL | Request,
-		init?: RequestInit,
-	): Promise<Response> => {
-		if (!wrappedFetch) {
-			if (!clientPromise) {
-				clientPromise = createX402Client(options);
-			}
-			const client = await clientPromise;
-			wrappedFetch = wrapFetchWithPayment(globalThis.fetch, client) as FetchFn;
-		}
-		return wrappedFetch(input, init);
-	};
+  return async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
+    if (!wrappedFetch) {
+      if (!clientPromise) {
+        clientPromise = createX402Client(options);
+      }
+      const client = await clientPromise;
+      wrappedFetch = wrapFetchWithPayment(globalThis.fetch, client) as FetchFn;
+    }
+    return wrappedFetch(input, init);
+  };
 }

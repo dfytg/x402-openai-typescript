@@ -66,10 +66,7 @@ for await (const chunk of stream) {
 import { EvmWallet, SvmWallet } from "x402-openai/wallets";
 
 const client = new X402OpenAI({
-  wallets: [
-    new EvmWallet({ privateKey: "0x…" }),
-    new SvmWallet({ privateKey: "base58…" }),
-  ],
+  wallets: [new EvmWallet({ privateKey: "0x…" }), new SvmWallet({ privateKey: "base58…" })],
 });
 ```
 
@@ -77,7 +74,7 @@ const client = new X402OpenAI({
 
 ```ts
 const wallet = new EvmWallet({ mnemonic: "word1 word2 … word12" });
-const wallet2 = new EvmWallet({ mnemonic: "…", accountIndex: 2 });                 // m/44'/60'/0'/0/2
+const wallet2 = new EvmWallet({ mnemonic: "…", accountIndex: 2 }); // m/44'/60'/0'/0/2
 const wallet3 = new EvmWallet({ mnemonic: "…", derivationPath: "m/44'/60'/2'/0/0" }); // custom path
 ```
 
@@ -92,14 +89,11 @@ import { X402OpenAI, preferNetwork, preferScheme, maxAmount } from "x402-openai"
 import { EvmWallet, SvmWallet } from "x402-openai/wallets";
 
 const client = new X402OpenAI({
-  wallets: [
-    new EvmWallet({ privateKey: "0x…" }),
-    new SvmWallet({ privateKey: "base58…" }),
-  ],
+  wallets: [new EvmWallet({ privateKey: "0x…" }), new SvmWallet({ privateKey: "base58…" })],
   policies: [
-    preferNetwork("eip155:8453"),  // Prefer Base mainnet
-    preferScheme("exact"),         // Prefer exact payment scheme
-    maxAmount(1_000_000n),         // Cap at 1 USDC (6 decimals)
+    preferNetwork("eip155:8453"), // Prefer Base mainnet
+    preferScheme("exact"), // Prefer exact payment scheme
+    maxAmount(1_000_000n), // Cap at 1 USDC (6 decimals)
   ],
 });
 ```
@@ -110,23 +104,23 @@ const client = new X402OpenAI({
 
 Drop-in replacement for `openai.OpenAI`. Provide **exactly one** credential source:
 
-| Parameter    | Type               | Description                                        |
-| :----------- | :----------------- | :------------------------------------------------- |
-| `wallet`     | `Wallet`           | Single wallet adapter                              |
-| `wallets`    | `Wallet[]`         | Multiple adapters (multi-chain)                    |
-| `policies`   | `PaymentPolicy[]`  | Payment policies (chain/scheme preference, amount cap) |
-| `x402Client` | `x402Client`       | Pre-configured x402 client (bypasses `policies`)   |
+| Parameter    | Type              | Description                                            |
+| :----------- | :---------------- | :----------------------------------------------------- |
+| `wallet`     | `Wallet`          | Single wallet adapter                                  |
+| `wallets`    | `Wallet[]`        | Multiple adapters (multi-chain)                        |
+| `policies`   | `PaymentPolicy[]` | Payment policies (chain/scheme preference, amount cap) |
+| `x402Client` | `x402Client`      | Pre-configured x402 client (bypasses `policies`)       |
 
 All standard OpenAI options (`baseURL`, `timeout`, `maxRetries`, …) are forwarded.
 Default `baseURL`: `https://llm.qntx.fun/v1`
 
 ### Wallet Adapters
 
-| Class                            | Chain               | Install extras                       |
-| :------------------------------- | :------------------ | :----------------------------------- |
-| `EvmWallet({ privateKey: … })`   | EVM                 | `@x402/evm viem`                     |
-| `EvmWallet({ mnemonic: … })`     | EVM (BIP-39)        | `@x402/evm viem`                     |
-| `SvmWallet({ privateKey: … })`   | Solana              | `@x402/svm @solana/kit @scure/base`  |
+| Class                          | Chain        | Install extras                      |
+| :----------------------------- | :----------- | :---------------------------------- |
+| `EvmWallet({ privateKey: … })` | EVM          | `@x402/evm viem`                    |
+| `EvmWallet({ mnemonic: … })`   | EVM (BIP-39) | `@x402/evm viem`                    |
+| `SvmWallet({ privateKey: … })` | Solana       | `@x402/svm @solana/kit @scure/base` |
 
 Implement the [`Wallet`](src/wallets/base.ts) interface to add a new chain.
 

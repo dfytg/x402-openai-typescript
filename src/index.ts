@@ -36,10 +36,10 @@ export type { X402OpenAIOptions } from "./client.ts";
 export { X402OpenAI } from "./client.ts";
 export { maxAmount, preferNetwork, preferScheme } from "./policies.ts";
 export type {
-	EvmWalletMnemonicOptions,
-	EvmWalletOptions,
-	EvmWalletPrivateKeyOptions,
-	SvmWalletOptions,
-	Wallet,
+  EvmWalletMnemonicOptions,
+  EvmWalletOptions,
+  EvmWalletPrivateKeyOptions,
+  SvmWalletOptions,
+  Wallet,
 } from "./wallets/index.ts";
 export { EvmWallet, SvmWallet } from "./wallets/index.ts";

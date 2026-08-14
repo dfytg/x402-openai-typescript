@@ -36,18 +36,15 @@ import type { PaymentPolicy, PaymentRequirements } from "@x402/fetch";
  * @param network - CAIP-2 network identifier or wildcard pattern.
  */
 export function preferNetwork(network: string): PaymentPolicy {
-	const isWildcard = network.endsWith(":*");
-	const prefix = isWildcard ? network.slice(0, -1) : null; // "eip155:"
+  const isWildcard = network.endsWith(":*");
+  const prefix = isWildcard ? network.slice(0, -1) : null; // "eip155:"
 
-	return (
-		_version: number,
-		reqs: PaymentRequirements[],
-	): PaymentRequirements[] => {
-		const matched = reqs.filter((r) =>
-			prefix ? r.network.startsWith(prefix) : r.network === network,
-		);
-		return matched.length > 0 ? matched : reqs;
-	};
+  return (_version: number, reqs: PaymentRequirements[]): PaymentRequirements[] => {
+    const matched = reqs.filter((r) =>
+      prefix ? r.network.startsWith(prefix) : r.network === network,
+    );
+    return matched.length > 0 ? matched : reqs;
+  };
 }
 
 /**
@@ -59,13 +56,10 @@ export function preferNetwork(network: string): PaymentPolicy {
  * @param scheme - Payment scheme identifier (e.g. `"exact"`).
  */
 export function preferScheme(scheme: string): PaymentPolicy {
-	return (
-		_version: number,
-		reqs: PaymentRequirements[],
-	): PaymentRequirements[] => {
-		const matched = reqs.filter((r) => r.scheme === scheme);
-		return matched.length > 0 ? matched : reqs;
-	};
+  return (_version: number, reqs: PaymentRequirements[]): PaymentRequirements[] => {
+    const matched = reqs.filter((r) => r.scheme === scheme);
+    return matched.length > 0 ? matched : reqs;
+  };
 }
 
 /**
@@ -78,20 +72,15 @@ export function preferScheme(scheme: string): PaymentPolicy {
  * @param max - Maximum amount as a bigint or number (token base units).
  */
 export function maxAmount(max: bigint | number): PaymentPolicy {
-	const limit = BigInt(max);
+  const limit = BigInt(max);
 
-	return (
-		_version: number,
-		reqs: PaymentRequirements[],
-	): PaymentRequirements[] => {
-		const matched = reqs.filter((r) => {
-			const value = BigInt(
-				"amount" in r
-					? r.amount
-					: ((r as Record<string, string>).maxAmountRequired ?? "0"),
-			);
-			return value <= limit;
-		});
-		return matched.length > 0 ? matched : reqs;
-	};
+  return (_version: number, reqs: PaymentRequirements[]): PaymentRequirements[] => {
+    const matched = reqs.filter((r) => {
+      const value = BigInt(
+        "amount" in r ? r.amount : ((r as Record<string, string>).maxAmountRequired ?? "0"),
+      );
+      return value <= limit;
+    });
+    return matched.length > 0 ? matched : reqs;
+  };
 }
